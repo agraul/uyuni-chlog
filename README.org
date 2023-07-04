@@ -1,0 +1,31 @@
+#+title: =uyuni-chlog= - An Uyuni changelog helper for Emacs
+
+=uyuni-chlog= is a helper that makes filling [[https://github.com/uyuni-project/uyuni/wiki/Contributing#changelogs][Uyuni changelog entries]] easy.
+[[https://uyuni-project.org][Uyuni]] is developed in a [[https://github.com/uyuni-project/uyuni][monorepo]] and distributed as many RPM packages. As a
+result, there are many different .changes tracked in the repository.
+Nowadays, these changes files are not updated directly. In each Pull
+Request, one new .changes file is added for each original .changes file.
+Later on, all these .changes files are merged into the main ones.
+
+uyuni-chlog automatically finds the correct changelog to update and shows a
+prompt for the changelog entry.
+
+* Installation
+Just add =uyuni-chlog= like any other package and set =uyuni-chlog-user= to your username.
+
+#+begin_src elisp
+; $DOOMDIR/packages.el
+(package! uyuni-chlog :recipe (:host github :repo "agraul/uyuni-chlog"))
+#+end_src
+
+#+begin_src elisp
+; DOOMDIR/config.el
+(use-package! uyuni-chlog
+  :commands (uyuni-chlog-cmd)
+  :custom
+  (uyuni-chlog-user "<username>"))
+#+end_src
+
+* Dependencies
+- =magit=
+- =projectile=
