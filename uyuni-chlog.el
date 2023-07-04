@@ -40,13 +40,24 @@
   :type 'string
   :group 'uyuni-chlog)
 
-(defun uyuni-chlog-cmd (feature message)
+(defun uyuni-chlog-add (feature message)
   "Re-implementation of Uyuni's rel-eng/bin/mkchlog.
 
 Prompt for FEATURE (part of the changelog name) and MESSAGE,
 which is the changelog message that's written to a new changlog file."
   (interactive "sFeature: \nsMessage: ")
   (uyuni-chlog default-directory feature message))
+
+(defun uyuni-chlog-rm ()
+  (interactive)
+  (let ((changes (completing-read "Delete: " (uyuni-chlog-list))))
+    (magit-unstage-file changes)
+    (delete-file (expand-file-name changes (projectile-project-root)))))
+
+(defun uyuni-chlog-list ()
+  "List staged changelog parts."
+  (let ((regex (format "\\.changes\\.%s\\.\\w+$" uyuni-chlog-user)))
+    (seq-filter (lambda (f) (string-match-p regex f)) (magit-staged-files))))
 
 (defun uyuni-chlog (dir feature message)
   "Re-implementation of Uyuni's rel-eng/bin/mkchlog.
