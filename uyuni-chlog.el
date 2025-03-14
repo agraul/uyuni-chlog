@@ -67,14 +67,16 @@ which is the changelog message that's written to a new changlog file."
 DIR is normally the 'default-directory',
 FEATURE is a slug to make .changes files unique,
 MESSAGE is the changelog entry itself."
-  (let ((new-changelog-file (uyuni-chlog--new-changes-name
-                             (uyuni-chlog--find-changelog-file dir)
-                             feature uyuni-chlog-user)))
-    (with-temp-file new-changelog-file
+  (let ((changelog-file (uyuni-chlog--new-changes-name
+                         (uyuni-chlog--find-changelog-file dir)
+                         feature uyuni-chlog-user)))
+    (with-temp-file changelog-file
+      (setq-local fill-column 67)
       (insert (format "- %s\n" message))
-      (when (file-readable-p new-changelog-file)
-        (insert-file-contents new-changelog-file)))
-    (magit-stage-file new-changelog-file)))
+      (fill-region (point) (point-min))
+      (when (file-readable-p changelog-file)
+        (insert-file-contents changelog-file)))
+    (magit-stage-file changelog-file)))
 
 (defun uyuni-chlog--new-changes-name (changes feature user)
   "Append .USER.FEATURE to the CHANGES file."
