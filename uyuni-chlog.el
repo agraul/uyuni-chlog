@@ -9,7 +9,7 @@
 ;; Version: 0.9
 ;; Keywords: convenience tools
 ;; Homepage: https://github.com/agraul/uyuni-chlog
-;; Package-Requires: ((emacs "27.1"))
+;; Package-Requires: ((emacs "27.1") (magit))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -27,9 +27,10 @@
 ;;  prompt for the changelog entry.
 ;;
 ;;; Code:
+(require 'project)
+
 (require 'magit-git)
 (require 'magit-apply)
-(require 'projectile)
 
 (defgroup uyuni-chlog nil
   "Customize uyuni-chlog."
@@ -49,10 +50,11 @@ which is the changelog message that's written to a new changlog file."
   (uyuni-chlog default-directory feature message))
 
 (defun uyuni-chlog-rm ()
+  "Delete a changes file created by `uyuni-chlog-add'."
   (interactive)
   (let ((changes (completing-read "Delete: " (uyuni-chlog-list))))
     (magit-unstage-file changes)
-    (delete-file (expand-file-name changes (projectile-project-root)))))
+    (delete-file (expand-file-name changes (project-root (project-current t))))))
 
 (defun uyuni-chlog-list ()
   "List staged changelog parts."
@@ -84,7 +86,9 @@ MESSAGE is the changelog entry itself."
 DIR defaults to current directory."
   (let ((dir (or dir default-directory)))
     (car (directory-files
-          (expand-file-name (uyuni-chlog--find-package-dir dir) (projectile-project-root dir))
+          (expand-file-name
+           (uyuni-chlog--find-package-dir dir)
+           (project-root (project-current nil dir)))
           t
           "\\.changes$"))))
 
@@ -112,7 +116,7 @@ DIR defaults to current directory."
 
 The resulting directory contains meta files, e.g. foo.spec and foo.changes."
   (car (seq-filter (apply-partially #'uyuni-chlog--tracked-dir-for-current-p dir)
-                   (uyuni-chlog--list-tracked-dirs (projectile-project-root dir)))))
+                   (uyuni-chlog--list-tracked-dirs (project-root (project-current nil dir))))))
 
 
 (provide 'uyuni-chlog)
