@@ -36,7 +36,7 @@
   "Customize uyuni-chlog."
   :group 'tools)
 
-(defcustom uyuni-chlog-user ""
+(defcustom uyuni-chlog-user user-login-name
   "The username (no spaces) that's used for the changelog file name."
   :type 'string
   :group 'uyuni-chlog)
