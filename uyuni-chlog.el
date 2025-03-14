@@ -64,7 +64,7 @@ which is the changelog message that's written to a new changlog file."
 (defun uyuni-chlog (dir feature message)
   "Re-implementation of Uyuni's rel-eng/bin/mkchlog.
 
-DIR is normally the 'default-directory',
+DIR is normally the `default-directory',
 FEATURE is a slug to make .changes files unique,
 MESSAGE is the changelog entry itself."
   (let ((changelog-file (uyuni-chlog--new-changes-name
