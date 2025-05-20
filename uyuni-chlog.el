@@ -52,8 +52,9 @@ which is the changelog message that's written to a new changlog file."
 (defun uyuni-chlog-rm ()
   "Delete a changes file created by `uyuni-chlog-add'."
   (interactive)
-  (let ((changes (completing-read "Delete: " (uyuni-chlog-list))))
-    (magit-unstage-file changes)
+  (let ((changes (completing-read "Delete: " (uyuni-chlog-list)))
+        (magit-auto-revert-mode nil))
+    (magit-unstage-files changes)
     (delete-file (expand-file-name changes (project-root (project-current t))))))
 
 (defun uyuni-chlog-list ()
@@ -76,7 +77,8 @@ MESSAGE is the changelog entry itself."
       (fill-region (point) (point-min))
       (when (file-readable-p changelog-file)
         (insert-file-contents changelog-file)))
-    (magit-stage-file changelog-file)))
+    (let ((magit-auto-revert-mode nil))
+      (magit-stage-files changelog-file))))
 
 (defun uyuni-chlog--new-changes-name (changes feature user)
   "Append .USER.FEATURE to the CHANGES file."
